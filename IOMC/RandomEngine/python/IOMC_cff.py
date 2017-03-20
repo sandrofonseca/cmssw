@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-#
+# 
 #  seed for a source no longer needed - replaces by "generator"
 #
 #    theSource = cms.PSet(
@@ -150,7 +150,11 @@ RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
         initialSeed = cms.untracked.uint32(987346),
         engineName = cms.untracked.string('TRandom3')
     ),
-
+#CTPPS FastSim
+    CTPPSFastRecHits = cms.PSet(
+        initialSeed = cms.untracked.uint32(1357987),
+        engineName = cms.untracked.string('TRandom3')
+     ),	
 
     # filter for simulated beam spot
     simBeamSpotFilter = cms.PSet(
@@ -169,31 +173,14 @@ RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
 
 randomEngineStateProducer = cms.EDProducer("RandomEngineStateProducer")
 
-from Configuration.Eras.Modifier_run3_GEM_cff import run3_GEM
-run3_GEM.toModify(RandomNumberGeneratorService, simMuonGEMDigis = cms.PSet(
+from Configuration.StandardSequences.Eras import eras
+eras.run3_GEM.toModify(RandomNumberGeneratorService, simMuonGEMDigis = cms.PSet(
         initialSeed = cms.untracked.uint32(1234567),
         engineName = cms.untracked.string('HepJamesRandom')) )
 
-from Configuration.Eras.Modifier_phase2_muon_cff import phase2_muon
-phase2_muon.toModify(
-    RandomNumberGeneratorService,
-    simMuonME0Digis = cms.PSet(
+eras.phase2_muon.toModify(RandomNumberGeneratorService, simMuonME0Digis = cms.PSet(
         initialSeed = cms.untracked.uint32(1234567),
-        engineName = cms.untracked.string('HepJamesRandom')),
-    simMuonME0ReDigis = cms.PSet(
-        initialSeed = cms.untracked.uint32(7654321),
-        engineName = cms.untracked.string('HepJamesRandom'))
-)
+        engineName = cms.untracked.string('HepJamesRandom')) )
 
-from Configuration.Eras.Modifier_phase2_timing_cff import phase2_timing
-phase2_timing.toModify(
-    RandomNumberGeneratorService,
-    trackTimeValueMapProducer = cms.PSet( 
-        initialSeed = cms.untracked.uint32(1234567), 
-        engineName = cms.untracked.string('HepJamesRandom') 
-        ),
-    ecalBarrelClusterFastTimer = cms.PSet(
-        initialSeed = cms.untracked.uint32(1234567),
-        engineName = cms.untracked.string('HepJamesRandom')
-        )
-)
+eras.phase2_timing.toModify(RandomNumberGeneratorService,
+                            trackTimeValueMapProducer = cms.PSet(initialSeed = cms.untracked.uint32(1234567), engineName = cms.untracked.string('HepJamesRandom') ) )
